@@ -1,6 +1,6 @@
 import { Transaction } from '../types'
 import { format } from 'date-fns'
-import { Edit, Trash2, Eye } from 'lucide-react'
+import { Edit, Trash2 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 
 interface TransactionListProps {

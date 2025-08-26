@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { X } from 'lucide-react'
 import { useStore } from '../store/useStore'
-import { Transaction, TransactionFormData } from '../types'
+import { TransactionFormData } from '../types'
 
 interface TransactionModalProps {
   open: boolean

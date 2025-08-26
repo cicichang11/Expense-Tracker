@@ -5,12 +5,12 @@ import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns'
 import ExpenseChart from '../components/ExpenseChart'
 import BalanceChart from '../components/BalanceChart'
 import MonthlyReport from '../components/MonthlyReport'
+import ExportModal from '../components/ExportModal'
 
 const Reports = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date())
-  const { transactions, categories, getDashboardStats } = useStore()
-
-  const stats = getDashboardStats()
+  const [showExportModal, setShowExportModal] = useState(false)
+  const { transactions } = useStore()
 
   // Generate month options for the last 12 months
   const monthOptions = Array.from({ length: 12 }, (_, i) => {
@@ -68,20 +68,30 @@ const Reports = () => {
           </p>
         </div>
         
-        {/* Month Selector */}
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <Calendar className="h-5 w-5 text-gray-400" />
-          <select
-            value={selectedMonth.toISOString()}
-            onChange={(e) => setSelectedMonth(new Date(e.target.value))}
-            className="input max-w-xs"
+          <button
+            onClick={() => setShowExportModal(true)}
+            className="btn-secondary flex items-center gap-2"
           >
-            {monthOptions.map((option) => (
-              <option key={option.value.toISOString()} value={option.value.toISOString()}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <Download className="h-4 w-4" />
+            Export Reports
+          </button>
+          
+          {/* Month Selector */}
+          <div className="flex items-center space-x-3">
+            <Calendar className="h-5 w-5 text-gray-400" />
+            <select
+              value={selectedMonth.toISOString()}
+              onChange={(e) => setSelectedMonth(new Date(e.target.value))}
+              className="input max-w-xs"
+            >
+              {monthOptions.map((option) => (
+                <option key={option.value.toISOString()} value={option.value.toISOString()}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -201,7 +211,10 @@ const Reports = () => {
       <div className="card">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Detailed Monthly Report</h3>
-          <button className="btn-secondary flex items-center gap-2">
+          <button 
+            onClick={() => setShowExportModal(true)}
+            className="btn-secondary flex items-center gap-2"
+          >
             <Download className="h-4 w-4" />
             Export PDF
           </button>
@@ -213,6 +226,12 @@ const Reports = () => {
           expenses={monthExpenses}
         />
       </div>
+
+      {/* Export Modal */}
+      <ExportModal
+        open={showExportModal}
+        onClose={() => setShowExportModal(false)}
+      />
     </div>
   )
 }

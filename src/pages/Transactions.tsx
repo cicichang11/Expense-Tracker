@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { Search, Filter, SortAsc, SortDesc, Plus } from 'lucide-react'
+import { Search, Filter, SortAsc, SortDesc, Plus, Download } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import TransactionList from '../components/TransactionList'
 import TransactionModal from '../components/TransactionModal'
 import FilterModal from '../components/FilterModal'
+import ExportModal from '../components/ExportModal'
 
 const Transactions = () => {
   const [showFilterModal, setShowFilterModal] = useState(false)
   const [showTransactionModal, setShowTransactionModal] = useState(false)
+  const [showExportModal, setShowExportModal] = useState(false)
   
   const {
     filterOptions,
@@ -50,13 +52,22 @@ const Transactions = () => {
             Manage and track all your income and expenses
           </p>
         </div>
-        <button
-          onClick={() => setShowTransactionModal(true)}
-          className="btn-primary flex items-center gap-2 mt-4 sm:mt-0"
-        >
-          <Plus className="h-4 w-4" />
-          Add Transaction
-        </button>
+        <div className="flex items-center gap-3 mt-4 sm:mt-0">
+          <button
+            onClick={() => setShowExportModal(true)}
+            className="btn-secondary flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Export
+          </button>
+          <button
+            onClick={() => setShowTransactionModal(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add Transaction
+          </button>
+        </div>
       </div>
 
       {/* Filters and Search */}
@@ -156,6 +167,11 @@ const Transactions = () => {
         onClose={() => setShowFilterModal(false)}
         filterOptions={filterOptions}
         onApplyFilters={setFilterOptions}
+      />
+
+      <ExportModal
+        open={showExportModal}
+        onClose={() => setShowExportModal(false)}
       />
     </div>
   )

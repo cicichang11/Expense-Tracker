@@ -137,8 +137,8 @@ const FilterModal = ({ open, onClose, filterOptions, onApplyFilters }: FilterMod
                               onChange={(e) => setLocalFilters({
                                 ...localFilters,
                                 dateRange: {
-                                  ...localFilters.dateRange,
-                                  start: e.target.value
+                                  start: e.target.value,
+                                  end: localFilters.dateRange?.end || e.target.value
                                 }
                               })}
                               className="input text-sm"
@@ -152,7 +152,7 @@ const FilterModal = ({ open, onClose, filterOptions, onApplyFilters }: FilterMod
                               onChange={(e) => setLocalFilters({
                                 ...localFilters,
                                 dateRange: {
-                                  ...localFilters.dateRange,
+                                  start: localFilters.dateRange?.start || e.target.value,
                                   end: e.target.value
                                 }
                               })}

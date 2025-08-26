@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { X, Home, CreditCard, Tag, BarChart3, TrendingUp, TrendingDown } from 'lucide-react'
+import { Home, CreditCard, Tag, BarChart3, Target } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 
@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
   { name: 'Transactions', href: '/transactions', icon: CreditCard },
   { name: 'Categories', href: '/categories', icon: Tag },
+  { name: 'Budgets', href: '/budgets', icon: Target },
   { name: 'Reports', href: '/reports', icon: BarChart3 },
 ]
 
@@ -108,6 +109,28 @@ const Sidebar = ({ open, setOpen }: SidebarProps) => {
                     ${Math.abs(stats.monthlyBalance).toFixed(2)}
                   </span>
                 </div>
+                {stats.budgetUtilization > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Budget Usage</span>
+                    <span className={`text-sm font-medium ${
+                      stats.budgetUtilization <= 80 
+                        ? 'text-success-600' 
+                        : stats.budgetUtilization <= 100 
+                        ? 'text-warning-600' 
+                        : 'text-danger-600'
+                    }`}>
+                      {stats.budgetUtilization.toFixed(1)}%
+                    </span>
+                  </div>
+                )}
+                {stats.overspentCategories.length > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Over Budget</span>
+                    <span className="text-sm font-medium text-danger-600">
+                      {stats.overspentCategories.length} categories
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -5,9 +5,9 @@ import CategoryModal from '../components/CategoryModal'
 
 const Categories = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false)
-  const [editingCategory, setEditingCategory] = useState(null)
+  const [editingCategory, setEditingCategory] = useState<any>(null)
   
-  const { categories, deleteCategory, openCategoryModal } = useStore()
+  const { categories, deleteCategory } = useStore()
 
   const handleEdit = (category: any) => {
     setEditingCategory(category)
@@ -18,11 +18,6 @@ const Categories = () => {
     if (window.confirm('Are you sure you want to delete this category? This will also remove all transactions in this category.')) {
       deleteCategory(id)
     }
-  }
-
-  const handleAddNew = () => {
-    setEditingCategory(null)
-    setShowCategoryModal(true)
   }
 
   const handleCloseModal = () => {
