@@ -1,17 +1,17 @@
 # Expense Tracker - Smart Financial Management
 
-A comprehensive, modern expense tracking application built with React, TypeScript, and Tailwind CSS. Track your income and expenses, manage categories, visualize spending patterns, and take control of your finances with an intuitive and beautiful interface.
+A comprehensive, modern expense tracking application built with React, TypeScript, and Tailwind CSS. Track your income and expenses, manage categories, visualize spending patterns, and take control of your finances with an intuitive and beautiful interface. Features AI-powered transaction categorization for intelligent financial management.
 
-## ✨ Features
+## Features
 
-### 🎯 Core Functionality (MVP)
+### Core Functionality (MVP)
 - **Dashboard**: Overview of financial status with key metrics
 - **Transaction Management**: Add, edit, and delete income/expense transactions
 - **Category Management**: Customizable categories with icons and colors
 - **Data Persistence**: Local storage for data persistence across sessions
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 
-### 📊 Advanced Features
+### Advanced Features
 - **Data Visualization**: Interactive charts using Recharts
   - Pie chart for expense breakdown by category
   - Line chart for balance trends over time
@@ -19,14 +19,32 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - **Financial Reports**: Detailed monthly reports with category breakdowns
 - **Real-time Statistics**: Live updates of income, expenses, and balance
 
-### 🎨 User Experience
+### AI-Powered Features
+- **Smart Transaction Categorization**: AI automatically suggests categories based on transaction descriptions
+- **Quick Transaction Input**: Natural language input like "starbucks, 20 bucks" for fast transaction entry
+- **Intelligent Category Suggestions**: Confidence scoring and alternative category recommendations
+- **Learning System**: AI improves categorization accuracy based on user feedback
+- **Keyword Pattern Recognition**: Advanced pattern matching for 100+ food, transportation, and shopping terms
+
+### Budget Management
+- **Monthly/Yearly Budgets**: Set and track budgets per category
+- **Budget Utilization**: Visual progress bars and overspending alerts
+- **Budget Reports**: Comprehensive budget vs. spending analysis
+
+### Data Export & Reports
+- **CSV Export**: Export transactions, budgets, and reports to CSV format
+- **PDF Export**: Generate professional PDF reports with charts and summaries
+- **Multiple Export Formats**: Choose between CSV and PDF for different use cases
+
+### User Experience
 - **Modern UI**: Clean, intuitive interface built with Tailwind CSS
 - **Responsive Layout**: Mobile-first design with sidebar navigation
 - **Interactive Modals**: Smooth forms for adding/editing transactions and categories
 - **Visual Feedback**: Color-coded transactions and categories for easy identification
 - **Smooth Animations**: CSS transitions and micro-interactions
+- **Dark Mode**: Complete theme switching with persistent preferences
 
-## 🚀 Technology Stack
+## Technology Stack
 
 - **Frontend Framework**: React 18 with TypeScript
 - **Build Tool**: Vite for fast development and building
@@ -35,9 +53,11 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - **Charts**: Recharts for data visualization
 - **Icons**: Lucide React for beautiful, consistent icons
 - **Date Handling**: date-fns for date manipulation
+- **PDF Generation**: jsPDF and html2canvas for report generation
+- **AI Categorization**: Custom keyword-based categorization service (easily replaceable with OpenAI/Gemini APIs)
 - **Code Quality**: ESLint + Prettier for code formatting
 
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 - Node.js 16+ 
@@ -68,7 +88,7 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 4. **Open your browser**
    Navigate to `http://localhost:3000` to view the application
 
-## 🛠️ Available Scripts
+## Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
@@ -77,7 +97,7 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - `npm run lint:fix` - Fix ESLint errors automatically
 - `npm run format` - Format code with Prettier
 
-## 📱 Usage Guide
+## Usage Guide
 
 ### Getting Started
 1. **Add Categories**: Start by creating income and expense categories
@@ -91,12 +111,28 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - View total balance, monthly income/expenses
 - See recent transactions at a glance
 - Interactive charts for expense breakdown and balance trends
+- Budget utilization overview with progress indicators
 
 #### Transactions
 - Add new transactions with type, amount, description, category, and date
+- AI-powered category suggestions as you type descriptions
+- Quick input mode for natural language transaction entry
 - Filter transactions by type, category, date range, or search terms
 - Sort transactions by various fields
 - Edit or delete existing transactions
+
+#### AI Categorization
+- **Smart Suggestions**: Type descriptions like "lunch at starbucks" for automatic "Food & Dining" categorization
+- **Confidence Scoring**: See how confident the AI is in its suggestions
+- **Alternative Categories**: Get multiple category options when AI is uncertain
+- **Feedback System**: Help improve AI accuracy by accepting or rejecting suggestions
+- **Natural Language Processing**: Understands context and common transaction patterns
+
+#### Quick Transaction Input
+- **Natural Language**: Type "starbucks, 20 bucks" for instant transaction creation
+- **Auto-Parsing**: Automatically detects amounts, descriptions, and transaction types
+- **AI Integration**: Gets category suggestions for parsed descriptions
+- **Preview Mode**: Review parsed transaction before adding
 
 #### Categories
 - Create custom income and expense categories
@@ -104,58 +140,81 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - Select from 15+ predefined colors
 - Preview how categories will look before saving
 
+#### Budgets
+- Set monthly or yearly budgets per category
+- Track spending against budget limits
+- Visual progress bars and alerts
+- Budget utilization reports
+
 #### Reports
 - Monthly financial summaries
 - Category-wise spending analysis
 - Top spending categories with percentages
 - Detailed transaction lists
+- Budget vs. actual spending reports
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 src/
-├── components/          # Reusable UI components
-│   ├── Layout.tsx      # Main layout with sidebar
-│   ├── Header.tsx      # Top navigation header
-│   ├── Sidebar.tsx     # Sidebar navigation
-│   ├── StatCard.tsx    # Statistics display cards
-│   ├── TransactionList.tsx # Transaction table
-│   ├── TransactionModal.tsx # Add/edit transaction form
-│   ├── CategoryModal.tsx   # Add/edit category form
-│   ├── FilterModal.tsx     # Transaction filtering
-│   ├── ExpenseChart.tsx    # Pie chart component
-│   ├── BalanceChart.tsx    # Line chart component
-│   ├── RecentTransactions.tsx # Recent transactions list
-│   └── MonthlyReport.tsx   # Monthly report component
-├── pages/               # Page components
-│   ├── Dashboard.tsx    # Main dashboard page
-│   ├── Transactions.tsx # Transactions management
-│   ├── Categories.tsx   # Category management
-│   └── Reports.tsx      # Reports and analytics
-├── store/               # State management
-│   └── useStore.ts      # Zustand store configuration
-├── types/               # TypeScript type definitions
-│   └── index.ts         # All type interfaces
-├── App.tsx              # Main app component with routing
-├── main.tsx             # Application entry point
-└── index.css            # Global styles and Tailwind imports
+├── components/                    # Reusable UI components
+│   ├── Layout.tsx               # Main layout with sidebar
+│   ├── Header.tsx               # Top navigation header
+│   ├── Sidebar.tsx              # Sidebar navigation
+│   ├── StatCard.tsx             # Statistics display cards
+│   ├── TransactionList.tsx      # Transaction table
+│   ├── TransactionModal.tsx     # Add/edit transaction form
+│   ├── CategoryModal.tsx        # Add/edit category form
+│   ├── FilterModal.tsx          # Transaction filtering
+│   ├── ExpenseChart.tsx         # Pie chart component
+│   ├── BalanceChart.tsx         # Line chart component
+│   ├── BudgetChart.tsx          # Budget visualization
+│   ├── RecentTransactions.tsx   # Recent transactions list
+│   ├── MonthlyReport.tsx        # Monthly report component
+│   ├── SmartCategorySuggestion.tsx # AI category suggestions
+│   ├── QuickTransactionInput.tsx   # Natural language input
+│   ├── ExportModal.tsx          # Data export options
+│   └── ThemeToggle.tsx          # Dark/light mode toggle
+├── pages/                        # Page components
+│   ├── Dashboard.tsx            # Main dashboard page
+│   ├── Transactions.tsx         # Transactions management
+│   ├── Categories.tsx           # Category management
+│   ├── Budgets.tsx              # Budget management
+│   └── Reports.tsx              # Reports and analytics
+├── services/                     # Business logic services
+│   └── aiCategorizationService.ts # AI categorization logic
+├── store/                       # State management
+│   └── useStore.ts             # Zustand store configuration
+├── types/                       # TypeScript type definitions
+│   └── index.ts                # All type interfaces
+├── utils/                       # Utility functions
+│   ├── exportUtils.ts          # CSV export utilities
+│   └── pdfExportUtils.ts       # PDF export utilities
+├── hooks/                       # Custom React hooks
+│   └── useTheme.ts             # Theme management hook
+├── App.tsx                      # Main app component with routing
+├── main.tsx                     # Application entry point
+└── index.css                    # Global styles and Tailwind imports
 ```
 
-## 🎨 Customization
+## Customization
 
 ### Styling
 The application uses Tailwind CSS with custom color schemes:
 - Primary colors: Blue variants
 - Success colors: Green variants  
 - Danger colors: Red variants
+- Warning colors: Orange variants
 - Custom animations and transitions
+- Dark mode support with custom color palettes
 
 ### Adding New Features
 - **New Charts**: Extend the chart components in `src/components/`
 - **Additional Reports**: Create new report components in `src/pages/`
 - **Custom Categories**: Modify the default categories in `src/store/useStore.ts`
+- **AI Integration**: Replace mock AI service with OpenAI/Gemini APIs in `src/services/aiCategorizationService.ts`
 
-## 📊 Data Models
+## Data Models
 
 ### Transaction
 ```typescript
@@ -183,14 +242,58 @@ interface Category {
 }
 ```
 
-## 🔒 Data Persistence
+### Budget
+```typescript
+interface Budget {
+  id: string
+  categoryId: string
+  amount: number
+  period: 'monthly' | 'yearly'
+  startDate: string
+  endDate?: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+```
+
+### AI Categorization
+```typescript
+interface AICategorizationRequest {
+  description: string
+  type: 'income' | 'expense'
+}
+
+interface AICategorizationResponse {
+  category: string
+  confidence: number
+  alternatives?: string[]
+}
+```
+
+## Data Persistence
 
 - **Local Storage**: All data is stored in the browser's local storage
 - **Automatic Saving**: Changes are saved automatically
-- **Data Export**: Export functionality available in reports (coming soon)
+- **Data Export**: Export functionality available for CSV and PDF formats
 - **Backup**: Data persists across browser sessions
+- **Theme Persistence**: User preferences for light/dark mode are saved
 
-## 🚀 Deployment
+## AI Categorization System
+
+### Current Implementation
+- **Keyword-Based Pattern Matching**: Uses 100+ food, transportation, and shopping keywords
+- **Confidence Scoring**: Provides confidence levels from 30% to 98%
+- **Smart Fallbacks**: Suggests alternatives when confidence is low
+- **Learning Capability**: Collects user feedback for continuous improvement
+
+### Future Enhancements
+- **OpenAI Integration**: Replace mock service with GPT-4 for superior accuracy
+- **Google Gemini**: Alternative AI service integration
+- **Custom ML Models**: Train models on user data for personalized categorization
+- **Context Understanding**: Better understanding of complex transaction descriptions
+
+## Deployment
 
 ### Build for Production
 ```bash
@@ -207,7 +310,7 @@ npm run build
 2. Drag the `dist` folder to Netlify
 3. Configure build settings if needed
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
@@ -215,11 +318,11 @@ npm run build
 4. Push to the branch: `git push origin feature-name`
 5. Submit a pull request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [React](https://reactjs.org/) - UI library
 - [Tailwind CSS](https://tailwindcss.com/) - CSS framework
@@ -227,8 +330,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Recharts](https://recharts.org/) - Chart library
 - [Lucide](https://lucide.dev/) - Icon library
 - [date-fns](https://date-fns.org/) - Date utilities
+- [jsPDF](https://artskydj.github.io/jsPDF/docs/) - PDF generation
+- [html2canvas](https://html2canvas.hertzen.com/) - HTML to canvas conversion
 
-## 📞 Support
+## Support
 
 If you have any questions or need help:
 - Open an issue on GitHub
@@ -237,4 +342,4 @@ If you have any questions or need help:
 
 ---
 
-**Happy Expense Tracking! 💰📊**
+**Happy Expense Tracking!**
