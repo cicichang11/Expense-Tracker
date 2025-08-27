@@ -81,7 +81,7 @@ const CategoryModal = ({ open, onClose, editingCategory }: CategoryModalProps) =
       createdAt: editingCategory?.createdAt || new Date().toISOString()
     }
 
-    if (editingCategory) {
+    if (editingCategory && editingCategory.id) {
       updateCategory(editingCategory.id, categoryData)
     } else {
       addCategory(categoryData)
@@ -131,7 +131,7 @@ const CategoryModal = ({ open, onClose, editingCategory }: CategoryModalProps) =
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
                     <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900 mb-4">
-                      {editingCategory ? 'Edit Category' : 'Add New Category'}
+                      {editingCategory && editingCategory.id ? 'Edit Category' : 'Add New Category'}
                     </Dialog.Title>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -252,7 +252,7 @@ const CategoryModal = ({ open, onClose, editingCategory }: CategoryModalProps) =
                           type="submit"
                           className="btn-primary"
                         >
-                          {editingCategory ? 'Update' : 'Add'} Category
+                          {editingCategory && editingCategory.id ? 'Update' : 'Add'} Category
                         </button>
                       </div>
                     </form>

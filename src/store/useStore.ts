@@ -9,7 +9,8 @@ import {
   AppSettings,
   FilterOptions, 
   SortOptions,
-  BudgetChartData
+  BudgetChartData,
+  AICategorizationFeedback
 } from '../types'
 
 interface StoreState {
@@ -20,6 +21,7 @@ interface StoreState {
   goals: Goal[]
   notifications: Notification[]
   settings: AppSettings
+  aiFeedback: AICategorizationFeedback[] // New: AI categorization feedback
   
   // UI State
   isTransactionModalOpen: boolean
@@ -62,6 +64,10 @@ interface StoreState {
   // New: Settings actions
   updateSettings: (updates: Partial<AppSettings>) => void
   toggleTheme: () => void
+  
+  // New: AI Feedback actions
+  addAIFeedback: (feedback: AICategorizationFeedback) => void
+  getAIFeedbackStats: () => { totalFeedback: number; accuracy: number; improvementSuggestions: string[] }
   
   // UI Actions
   openTransactionModal: (transaction?: Transaction) => void
@@ -143,6 +149,7 @@ export const useStore = create<StoreState>()(
       goals: [],
       notifications: [],
       settings: defaultSettings,
+      aiFeedback: [],
       isTransactionModalOpen: false,
       isCategoryModalOpen: false,
       isBudgetModalOpen: false,
@@ -533,6 +540,41 @@ export const useStore = create<StoreState>()(
         const { notifications } = get()
         return notifications.filter(n => n.type === type)
       },
+
+      // New: AI Feedback actions
+      addAIFeedback: (feedback) =>
+        set((state) => ({
+          aiFeedback: [...state.aiFeedback, feedback],
+        })),
+
+      getAIFeedbackStats: () => {
+        const { aiFeedback } = get()
+        const totalFeedback = aiFeedback.length
+        
+        if (totalFeedback === 0) {
+          return { totalFeedback: 0, accuracy: 0, improvementSuggestions: [] }
+        }
+
+        const correctPredictions = aiFeedback.filter(f => f.isCorrect).length
+        const accuracy = (correctPredictions / totalFeedback) * 100
+
+        // Generate improvement suggestions based on feedback
+        const improvementSuggestions: string[] = []
+        
+        if (accuracy < 70) {
+          improvementSuggestions.push('Consider expanding keyword patterns for better categorization')
+        }
+        
+        if (aiFeedback.length > 10) {
+          const recentFeedback = aiFeedback.slice(-10)
+          const recentAccuracy = (recentFeedback.filter(f => f.isCorrect).length / recentFeedback.length) * 100
+          if (recentAccuracy > accuracy) {
+            improvementSuggestions.push('Recent improvements detected - model is learning!')
+          }
+        }
+
+        return { totalFeedback, accuracy, improvementSuggestions }
+      },
     }),
     {
       name: 'expense-tracker-storage',
@@ -543,6 +585,7 @@ export const useStore = create<StoreState>()(
         goals: state.goals,
         notifications: state.notifications,
         settings: state.settings,
+        aiFeedback: state.aiFeedback,
       }),
     }
   )

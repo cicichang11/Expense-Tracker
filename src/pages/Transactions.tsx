@@ -5,6 +5,7 @@ import TransactionList from '../components/TransactionList'
 import TransactionModal from '../components/TransactionModal'
 import FilterModal from '../components/FilterModal'
 import ExportModal from '../components/ExportModal'
+import { format } from 'date-fns'
 
 const Transactions = () => {
   const [showFilterModal, setShowFilterModal] = useState(false)
@@ -33,7 +34,7 @@ const Transactions = () => {
   const SortButton = ({ field, children }: { field: 'date' | 'amount' | 'description' | 'category', children: React.ReactNode }) => (
     <button
       onClick={() => handleSort(field)}
-      className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+      className="flex items-center gap-1 px-3 py-1 text-sm text-muted hover:text-heading hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
     >
       {children}
       {sortOptions.field === field && (
@@ -47,8 +48,8 @@ const Transactions = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-heading">Transactions</h1>
+          <p className="mt-2 text-sm text-muted">
             Manage and track all your income and expenses
           </p>
         </div>
@@ -81,78 +82,76 @@ const Transactions = () => {
                 type="text"
                 placeholder="Search transactions..."
                 value={filterOptions.search || ''}
-                onChange={(e) => setFilterOptions({ search: e.target.value })}
-                className="input pl-10"
+                onChange={(e) => setFilterOptions({ ...filterOptions, search: e.target.value })}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-dark-bg-secondary dark:text-gray-100 dark:placeholder-gray-400"
               />
             </div>
           </div>
 
-          {/* Filter Button */}
-          <button
-            onClick={() => setShowFilterModal(true)}
-            className={`btn-secondary flex items-center gap-2 ${
-              hasActiveFilters ? 'ring-2 ring-primary-500' : ''
-            }`}
-          >
-            <Filter className="h-4 w-4" />
-            Filters
-            {hasActiveFilters && (
-              <span className="bg-primary-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {Object.values(filterOptions).filter(v => v !== undefined && v !== 'all' && v !== '').length}
-              </span>
-            )}
-          </button>
-
-          {/* Clear Filters */}
-          {hasActiveFilters && (
+          {/* Filter and Sort Buttons */}
+          <div className="flex items-center gap-2">
             <button
-              onClick={clearFilters}
-              className="btn-secondary"
+              onClick={() => setShowFilterModal(true)}
+              className="btn-secondary flex items-center gap-2"
             >
-              Clear
+              <Filter className="h-4 w-4" />
+              Filter
             </button>
-          )}
+            
+            {/* Sort Buttons */}
+            <div className="flex items-center gap-1 border border-gray-200 dark:border-dark-border rounded-lg p-1">
+              <SortButton field="date">Date</SortButton>
+              <SortButton field="amount">Amount</SortButton>
+              <SortButton field="description">Description</SortButton>
+              <SortButton field="category">Category</SortButton>
+            </div>
+          </div>
         </div>
 
         {/* Active Filters Display */}
         {hasActiveFilters && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted">Active filters:</span>
             {filterOptions.type && filterOptions.type !== 'all' && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary-100 dark:bg-primary-900/20 text-primary-800 dark:text-primary-200">
                 Type: {filterOptions.type}
               </span>
             )}
             {filterOptions.category && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary-100 dark:bg-primary-900/20 text-primary-800 dark:text-primary-200">
                 Category: {filterOptions.category}
               </span>
             )}
-            {filterOptions.dateRange && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                Date Range: {filterOptions.dateRange.start} to {filterOptions.dateRange.end}
+            {filterOptions.dateRange?.start && filterOptions.dateRange?.end && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary-100 dark:bg-primary-900/20 text-primary-800 dark:text-primary-200">
+                Date: {format(new Date(filterOptions.dateRange.start), 'MMM dd')} - {format(new Date(filterOptions.dateRange.end), 'MMM dd')}
               </span>
             )}
+            <button
+              onClick={clearFilters}
+              className="text-sm text-danger-600 dark:text-danger-400 hover:text-danger-800 dark:hover:text-danger-300 font-medium"
+            >
+              Clear all
+            </button>
           </div>
         )}
       </div>
 
-      {/* Transaction List */}
+      {/* Transactions List */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-heading">
             All Transactions ({transactions.length})
           </h2>
-          
-          {/* Sort Options */}
           <div className="flex items-center gap-1 text-sm">
-            <span className="text-gray-500 mr-2">Sort by:</span>
+            <span className="text-muted mr-2">Sort by:</span>
             <SortButton field="date">Date</SortButton>
             <SortButton field="amount">Amount</SortButton>
             <SortButton field="description">Description</SortButton>
             <SortButton field="category">Category</SortButton>
           </div>
         </div>
-
+        
         <TransactionList transactions={transactions} />
       </div>
 

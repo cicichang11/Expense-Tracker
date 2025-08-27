@@ -3,6 +3,8 @@ import { Dialog, Transition } from '@headlessui/react'
 import { X } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { TransactionFormData } from '../types'
+import SmartCategorySuggestion from './SmartCategorySuggestion'
+import QuickTransactionInput from './QuickTransactionInput'
 
 interface TransactionModalProps {
   open: boolean
@@ -15,7 +17,8 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
     addTransaction, 
     updateTransaction, 
     closeTransactionModal,
-    categories 
+    categories,
+    addAIFeedback
   } = useStore()
 
   const [formData, setFormData] = useState<TransactionFormData>({
@@ -27,6 +30,7 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
   })
 
   const [errors, setErrors] = useState<Partial<TransactionFormData>>({})
+  const [inputMode, setInputMode] = useState<'detailed' | 'quick'>('detailed')
 
   useEffect(() => {
     if (editingTransaction) {
@@ -98,6 +102,27 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
     onClose()
   }
 
+  const handleQuickTransactionCreate = (transaction: {
+    description: string;
+    amount: number;
+    category: string;
+    type: 'income' | 'expense';
+  }) => {
+    const transactionData = {
+      id: crypto.randomUUID(),
+      amount: transaction.amount,
+      type: transaction.type,
+      description: transaction.description,
+      category: transaction.category,
+      date: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+
+    addTransaction(transactionData)
+    handleClose()
+  }
+
   const filteredCategories = categories.filter(cat => cat.type === formData.type)
 
   return (
@@ -144,7 +169,36 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
                       {editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}
                     </Dialog.Title>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Input Mode Tabs */}
+                    {!editingTransaction && (
+                      <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-4 dark:bg-gray-700">
+                        <button
+                          type="button"
+                          onClick={() => setInputMode('detailed')}
+                          className={`flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors duration-200 ${
+                            inputMode === 'detailed'
+                              ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-600 dark:text-gray-100'
+                              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
+                          }`}
+                        >
+                          Detailed Form
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setInputMode('quick')}
+                          className={`flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors duration-200 ${
+                            inputMode === 'quick'
+                              ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-600 dark:text-gray-100'
+                              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
+                          }`}
+                        >
+                          Quick Input
+                        </button>
+                      </div>
+                    )}
+
+                    {inputMode === 'detailed' ? (
+                      <form onSubmit={handleSubmit} className="space-y-4">
                       {/* Transaction Type */}
                       <div>
                         <label className="label">Transaction Type</label>
@@ -197,7 +251,7 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
                       {/* Description */}
                       <div>
                         <label htmlFor="description" className="label">
-                          Description (Optional)
+                          Description <span className="text-primary-600 dark:text-primary-400 font-medium">(AI-powered categorization)</span>
                         </label>
                         <input
                           type="text"
@@ -206,6 +260,15 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
                           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                           className="input"
                           placeholder="Enter description..."
+                        />
+                        
+                        {/* AI Category Suggestion */}
+                        <SmartCategorySuggestion
+                          description={formData.description}
+                          type={formData.type}
+                          onCategorySelect={(category) => setFormData({ ...formData, category })}
+                          currentCategory={formData.category}
+                          disabled={!formData.description.trim()}
                         />
                       </div>
 
@@ -217,7 +280,21 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
                         <select
                           id="category"
                           value={formData.category}
-                          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                          onChange={(e) => {
+                            const newCategory = e.target.value;
+                            setFormData({ ...formData, category: newCategory });
+                            
+                            // Collect AI feedback if user changed from AI suggestion
+                            if ((window as any).lastAISuggestion && (window as any).lastAISuggestion !== newCategory) {
+                              addAIFeedback({
+                                originalDescription: formData.description,
+                                suggestedCategory: (window as any).lastAISuggestion,
+                                userSelectedCategory: newCategory,
+                                isCorrect: false,
+                                timestamp: new Date().toISOString()
+                              });
+                            }
+                          }}
                           className={`input ${errors.category ? 'border-danger-500' : ''}`}
                         >
                           <option value="">Select a category</option>
@@ -266,6 +343,9 @@ const TransactionModal = ({ open, onClose }: TransactionModalProps) => {
                         </button>
                       </div>
                     </form>
+                    ) : (
+                      <QuickTransactionInput onTransactionCreate={handleQuickTransactionCreate} />
+                    )}
                   </div>
                 </div>
               </Dialog.Panel>

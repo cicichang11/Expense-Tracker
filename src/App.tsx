@@ -5,18 +5,29 @@ import Transactions from './pages/Transactions'
 import Categories from './pages/Categories'
 import Budgets from './pages/Budgets'
 import Reports from './pages/Reports'
+import { useEffect } from 'react'
 
 function App() {
+  // Initialize theme on app load
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [])
+
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="transactions" element={<Transactions />} />
-        <Route path="categories" element={<Categories />} />
-        <Route path="budgets" element={<Budgets />} />
-        <Route path="reports" element={<Reports />} />
-      </Route>
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/budgets" element={<Budgets />} />
+        <Route path="/reports" element={<Reports />} />
+      </Routes>
+    </Layout>
   )
 }
 

@@ -10,6 +10,11 @@ import {
   downloadCSV,
   generateFilename
 } from '../utils/exportUtils'
+import {
+  exportTransactionsToPDF,
+  exportBudgetReportToPDF,
+  exportMonthlySummaryToPDF
+} from '../utils/pdfExportUtils'
 
 interface ExportModalProps {
   open: boolean
@@ -30,61 +35,121 @@ const ExportModal = ({ open, onClose }: ExportModalProps) => {
   })
 
   const [selectedExportType, setSelectedExportType] = useState<'transactions' | 'budget' | 'summary'>('transactions')
+  const [isExporting, setIsExporting] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
 
-  const handleExport = () => {
+  const handleExport = async () => {
     try {
-      let csvContent: string
-      let filename: string
+      setIsExporting(true)
+      setExportError(null)
 
-      switch (selectedExportType) {
-        case 'transactions':
-          // Filter transactions by date range and selected categories
-          let filteredTransactions = transactions.filter(t => {
-            const date = new Date(t.date)
-            const start = new Date(exportOptions.dateRange!.start)
-            const end = new Date(exportOptions.dateRange!.end)
-            
-            const dateMatch = date >= start && date <= end
-            const categoryMatch = exportOptions.categories!.length === 0 || 
-              exportOptions.categories!.includes(t.category)
-            
-            return dateMatch && categoryMatch
-          })
-
-          csvContent = exportTransactionsToCSV(filteredTransactions)
-          filename = generateFilename('transactions', exportOptions.dateRange)
-          break
-
-        case 'budget':
-          csvContent = exportBudgetReportToCSV(
-            budgets,
-            categories,
-            transactions,
-            exportOptions.dateRange!.start,
-            exportOptions.dateRange!.end
-          )
-          filename = generateFilename('budget-report', exportOptions.dateRange)
-          break
-
-        case 'summary':
-          csvContent = exportCategorySummaryToCSV(
-            categories,
-            transactions,
-            exportOptions.dateRange!.start,
-            exportOptions.dateRange!.end
-          )
-          filename = generateFilename('category-summary', exportOptions.dateRange)
-          break
-
-        default:
-          throw new Error('Invalid export type')
+      if (exportOptions.format === 'csv') {
+        await handleCSVExport()
+      } else {
+        await handlePDFExport()
       }
 
-      downloadCSV(csvContent, filename)
       onClose()
     } catch (error) {
       console.error('Export failed:', error)
-      alert('Export failed. Please try again.')
+      setExportError(error instanceof Error ? error.message : 'Export failed. Please try again.')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleCSVExport = async () => {
+    let csvContent: string
+    let filename: string
+
+    switch (selectedExportType) {
+      case 'transactions':
+        // Filter transactions by date range and selected categories
+        let filteredTransactions = transactions.filter(t => {
+          const date = new Date(t.date)
+          const start = new Date(exportOptions.dateRange!.start)
+          const end = new Date(exportOptions.dateRange!.end)
+          
+          const dateMatch = date >= start && date <= end
+          const categoryMatch = exportOptions.categories!.length === 0 || 
+            exportOptions.categories!.includes(t.category)
+          
+          return dateMatch && categoryMatch
+        })
+
+        csvContent = exportTransactionsToCSV(filteredTransactions)
+        filename = generateFilename('transactions', exportOptions.dateRange)
+        break
+
+      case 'budget':
+        csvContent = exportBudgetReportToCSV(
+          budgets,
+          categories,
+          transactions,
+          exportOptions.dateRange!.start,
+          exportOptions.dateRange!.end
+        )
+        filename = generateFilename('budget-report', exportOptions.dateRange)
+        break
+
+      case 'summary':
+        csvContent = exportCategorySummaryToCSV(
+          categories,
+          transactions,
+          exportOptions.dateRange!.start,
+          exportOptions.dateRange!.end
+        )
+        filename = generateFilename('category-summary', exportOptions.dateRange)
+        break
+
+      default:
+        throw new Error('Invalid export type')
+    }
+
+    downloadCSV(csvContent, filename)
+  }
+
+  const handlePDFExport = async () => {
+    switch (selectedExportType) {
+      case 'transactions':
+        // Filter transactions by date range and selected categories
+        let filteredTransactions = transactions.filter(t => {
+          const date = new Date(t.date)
+          const start = new Date(exportOptions.dateRange!.start)
+          const end = new Date(exportOptions.dateRange!.end)
+          
+          const dateMatch = date >= start && date <= end
+          const categoryMatch = exportOptions.categories!.length === 0 || 
+            exportOptions.categories!.includes(t.category)
+          
+          return dateMatch && categoryMatch
+        })
+
+        await exportTransactionsToPDF(filteredTransactions, {
+          dateRange: exportOptions.dateRange
+        })
+        break
+
+      case 'budget':
+        await exportBudgetReportToPDF(
+          budgets,
+          categories,
+          transactions,
+          exportOptions.dateRange!.start,
+          exportOptions.dateRange!.end
+        )
+        break
+
+      case 'summary':
+        await exportMonthlySummaryToPDF(
+          new Date(exportOptions.dateRange!.start),
+          transactions,
+          categories
+        )
+        break
+
+      default:
+        throw new Error('Invalid export type')
     }
   }
 
@@ -114,8 +179,8 @@ const ExportModal = ({ open, onClose }: ExportModalProps) => {
     },
     {
       id: 'summary',
-      name: 'Category Summary',
-      description: 'Export spending summary by category',
+      name: 'Monthly Summary',
+      description: 'Export monthly financial summary',
       icon: BarChart3,
       color: 'text-purple-600'
     }
@@ -266,15 +331,19 @@ const ExportModal = ({ open, onClose }: ExportModalProps) => {
                             />
                             CSV (Excel, Google Sheets)
                           </label>
-                          <label className="flex items-center text-gray-400">
+                          <label className="flex items-center">
                             <input
                               type="radio"
                               name="format"
                               value="pdf"
-                              disabled
+                              checked={exportOptions.format === 'pdf'}
+                              onChange={(e) => setExportOptions(prev => ({
+                                ...prev,
+                                format: e.target.value as 'csv' | 'pdf'
+                              }))}
                               className="mr-2"
                             />
-                            PDF (Coming Soon)
+                            PDF (Professional Reports)
                           </label>
                         </div>
                       </div>
@@ -292,22 +361,40 @@ const ExportModal = ({ open, onClose }: ExportModalProps) => {
                         </div>
                       </div>
 
+                      {/* Error Display */}
+                      {exportError && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                          <p className="text-sm text-red-800">{exportError}</p>
+                        </div>
+                      )}
+
                       {/* Form Actions */}
                       <div className="mt-6 flex justify-end space-x-3">
                         <button
                           type="button"
                           onClick={onClose}
                           className="btn-secondary"
+                          disabled={isExporting}
                         >
                           Cancel
                         </button>
                         <button
                           type="button"
                           onClick={handleExport}
+                          disabled={isExporting}
                           className="btn-primary flex items-center gap-2"
                         >
-                          <Download className="h-4 w-4" />
-                          Export {exportOptions.format.toUpperCase()}
+                          {isExporting ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              Exporting...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="h-4 w-4" />
+                              Export {exportOptions.format.toUpperCase()}
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>

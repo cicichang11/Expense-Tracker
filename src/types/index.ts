@@ -64,6 +64,26 @@ export interface TransactionFormData {
   date: string;
 }
 
+// New: AI Categorization interfaces
+export interface AICategorizationRequest {
+  description: string;
+  type: 'income' | 'expense';
+}
+
+export interface AICategorizationResponse {
+  category: string;
+  confidence: number;
+  alternatives?: string[];
+}
+
+export interface AICategorizationFeedback {
+  originalDescription: string;
+  suggestedCategory: string;
+  userSelectedCategory: string;
+  isCorrect: boolean;
+  timestamp: string;
+}
+
 export interface CategoryFormData {
   name: string;
   type: 'income' | 'expense';

@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
@@ -31,6 +32,18 @@ export default {
           800: '#166534',
           900: '#14532d',
         },
+        danger: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
+        },
         warning: {
           50: '#fffbeb',
           100: '#fef3c7',
@@ -43,18 +56,46 @@ export default {
           800: '#92400e',
           900: '#78350f',
         },
-        danger: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
-        }
+        // Dark mode specific colors
+        dark: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
+        // Dark mode component colors
+        'dark-card': '#1e293b',
+        'dark-border': '#334155',
+        'dark-text': '#f1f5f9',
+        'dark-text-secondary': '#cbd5e1',
+        'dark-bg': '#0f172a',
+        'dark-bg-secondary': '#1e293b',
+      },
+      backgroundColor: {
+        'dark-primary': '#0f172a',
+        'dark-secondary': '#1e293b',
+        'dark-card': '#1e293b',
+        'dark-border': '#334155',
+      },
+      textColor: {
+        'dark-primary': '#f1f5f9',
+        'dark-secondary': '#cbd5e1',
+        'dark-muted': '#94a3b8',
+      },
+      borderColor: {
+        'dark-primary': '#334155',
+        'dark-secondary': '#475569',
+      },
+      ringColor: {
+        'dark-primary': '#3b82f6',
+        'dark-secondary': '#60a5fa',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
