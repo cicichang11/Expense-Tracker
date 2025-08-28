@@ -46,7 +46,8 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 
 ## Technology Stack
 
-- **Frontend Framework**: React 18 with TypeScript
+### Frontend
+- **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite for fast development and building
 - **Styling**: Tailwind CSS for utility-first styling
 - **State Management**: Zustand for lightweight state management
@@ -56,6 +57,37 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - **PDF Generation**: jsPDF and html2canvas for report generation
 - **AI Categorization**: Custom keyword-based categorization service (easily replaceable with OpenAI/Gemini APIs)
 - **Code Quality**: ESLint + Prettier for code formatting
+
+### Backend Architecture Options
+
+#### Option A: Full-Stack with Node.js/Express (Recommended)
+- **Frontend**: React (current implementation)
+- **Backend**: Node.js + Express + PostgreSQL
+- **Authentication**: JWT + bcrypt for secure user management
+- **Database**: PostgreSQL with Prisma ORM for type-safe database operations
+- **API**: RESTful API with comprehensive CRUD operations
+- **Deployment**: Vercel (frontend) + Railway/Heroku (backend)
+- **Real-time Features**: WebSocket support for live updates
+- **File Storage**: Cloud storage for document uploads and exports
+
+#### Option B: Python FastAPI Backend
+- **Frontend**: React (current implementation)
+- **Backend**: Python FastAPI + SQLAlchemy + PostgreSQL
+- **Authentication**: JWT + passlib for secure user management
+- **Database**: PostgreSQL with Alembic migrations
+- **API**: FastAPI with automatic OpenAPI documentation
+- **Deployment**: Vercel (frontend) + Railway/DigitalOcean (backend)
+- **AI Integration**: Native Python ML libraries for enhanced categorization
+
+#### Option C: Supabase Backend
+- **Frontend**: React (current implementation)
+- **Backend**: Supabase (PostgreSQL + Auth + Real-time)
+- **Authentication**: Built-in Supabase Auth with social providers
+- **Database**: PostgreSQL with Row Level Security
+- **API**: Auto-generated REST and GraphQL APIs
+- **Deployment**: Vercel (frontend) + Supabase Cloud
+- **Real-time**: Built-in real-time subscriptions
+- **Edge Functions**: Serverless functions for complex business logic
 
 ## Installation
 
@@ -292,6 +324,38 @@ interface AICategorizationResponse {
 - **Google Gemini**: Alternative AI service integration
 - **Custom ML Models**: Train models on user data for personalized categorization
 - **Context Understanding**: Better understanding of complex transaction descriptions
+
+## Backend Development Roadmap
+
+### Phase 1: Database & Authentication
+- Set up PostgreSQL database with Prisma ORM
+- Implement user registration and login with JWT
+- Add user-specific data isolation
+- Implement password hashing with bcrypt
+
+### Phase 2: API Development
+- Create RESTful API endpoints for all CRUD operations
+- Implement middleware for authentication and validation
+- Add rate limiting and security headers
+- Set up comprehensive error handling
+
+### Phase 3: AI Integration
+- Replace mock AI service with OpenAI GPT-4 API
+- Implement intelligent prompt engineering
+- Add user feedback collection for model improvement
+- Set up AI service monitoring and analytics
+
+### Phase 4: Advanced Features
+- Real-time updates with WebSocket
+- File upload for receipts and documents
+- Advanced analytics and machine learning insights
+- Multi-currency support and exchange rates
+
+### Phase 5: Deployment & Scaling
+- Deploy backend to Railway/Heroku
+- Set up CI/CD pipeline with GitHub Actions
+- Implement monitoring and logging
+- Add performance optimization and caching
 
 ## Deployment
 
