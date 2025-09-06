@@ -44,6 +44,25 @@ A comprehensive, modern expense tracking application built with React, TypeScrip
 - **Smooth Animations**: CSS transitions and micro-interactions
 - **Dark Mode**: Complete theme switching with persistent preferences
 
+## Screenshots
+
+### Dashboard
+![Dashboard 1](img/dashboard1.png)
+![Dashboard 2](img/dashboard2.png)
+
+### Transactions
+![Transactions](img/transaction.png)
+
+### Categories
+![Categories](img/cate.png)
+
+### Budgets
+![Budgets](img/budget.png)
+
+### Reports
+![Report 1](img/report1.png)
+![Report 2](img/report2.png)
+
 ## Technology Stack
 
 ### Frontend
